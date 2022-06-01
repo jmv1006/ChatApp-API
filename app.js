@@ -1,13 +1,16 @@
 const express = require("express");
 const app = express();
+require('dotenv').config();
 const db = require('./db');
+
+const passport = require('passport');
+const LocalStrategy = require('./config/passport/local-strategy');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get('/', (req, res) => {
-    res.status(200).json({response: "API Working"})
-});
+passport.use(LocalStrategy);
+app.use(passport.initialize());
 
 const messagesRoute = require('./routes/messages_route');
 app.use('/messages', messagesRoute);

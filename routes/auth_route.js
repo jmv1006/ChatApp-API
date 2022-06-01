@@ -6,4 +6,6 @@ router.get('/users', auth_controller.get_users)
 
 router.post('/sign-up', auth_controller.create_user)
 
+router.post('/sign-in', auth_controller.sign_in)
+
 module.exports = router;

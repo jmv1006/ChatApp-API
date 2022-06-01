@@ -1,6 +1,8 @@
 const con = require("../db");
 const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcryptjs");
+const passport = require('passport');
+
 
 exports.get_users = (req, res) => {
     con.query(`SELECT * FROM Users`, (err, result) => {
@@ -37,4 +39,18 @@ exports.create_user = (req, res) => {
             });
         })
     });
+};
+
+exports.sign_in = (req, res) => {
+    passport.authenticate('local', {session: false}, (err, user, info) => {
+        if(err) {
+            return res.status(400).json('Error Authenticating User')
+        }
+
+        if(!user) {
+            return res.status(400).json("Error Signing In")
+        }
+
+        return res.status(200).json({user})
+    })(req, res)
 }
