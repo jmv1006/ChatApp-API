@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+
 require('dotenv').config();
 const db = require('./db');
 
@@ -12,8 +13,8 @@ app.use(express.urlencoded({ extended: true }));
 passport.use(LocalStrategy);
 app.use(passport.initialize());
 
-const messagesRoute = require('./routes/messages_route');
-app.use('/messages', messagesRoute);
+const chatroomRoute = require('./routes/chatroom_route');
+app.use('/chatroom', chatroomRoute);
 
 const authRoute = require('./routes/auth_route');
 app.use('/auth', authRoute);
