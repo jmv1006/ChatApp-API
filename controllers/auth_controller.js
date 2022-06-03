@@ -2,7 +2,7 @@ const con = require("../db");
 const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcryptjs");
 const passport = require('passport');
-
+const jwt = require('jsonwebtoken');
 
 exports.get_users = (req, res) => {
     con.query(`SELECT * FROM Users`, (err, result) => {
@@ -51,6 +51,18 @@ exports.sign_in = (req, res) => {
             return res.status(400).json("Error Signing In")
         }
 
-        return res.status(200).json({user})
+        const tokenUser = {
+            id: user.Id,
+            username: user.Username
+        }
+        
+        const secret = process.env.TOKEN_SECRET
+        const token = jwt.sign({user: tokenUser}, secret, {expiresIn:'30m'});
+    
+        return res.status(200).json({
+            message: 'Auth Passed',
+            user: tokenUser,
+            token: token
+        })
     })(req, res)
 }
