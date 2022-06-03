@@ -70,3 +70,12 @@ exports.get_all_chatrooms = (req, res) => {
     res.status(200).json(result);
   });
 };
+
+exports.get_specific_chatroom = (req, res) => {
+  con.query(`SELECT * FROM Chatrooms WHERE Id="${req.params.chatroomId}" `, (err, result) => {
+    if (err) {
+      console.log(err);
+    }
+    res.status(200).json(result);
+  });
+};

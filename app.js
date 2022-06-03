@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const cors = require('cors')
 
 require('dotenv').config();
 const db = require('./db');
@@ -9,6 +10,7 @@ const LocalStrategy = require('./config/passport/local-strategy');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
 passport.use(LocalStrategy);
 app.use(passport.initialize());

@@ -13,7 +13,7 @@ con.connect((err) => {
         console.log(err)
     }
     
-    console.log('Successfully Connected to DB!')
+    console.log('Successfully Connected to DB')
 });
 
 module.exports = con;
