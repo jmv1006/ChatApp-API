@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const chatroomController = require('../controllers/chatroom_controller');
-const passport = require('passport');
 
 router.get('/all', chatroomController.get_all_chatrooms)
 

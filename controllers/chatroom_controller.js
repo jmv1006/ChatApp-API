@@ -47,7 +47,7 @@ exports.create_message = (req, res) => {
         }
       );
     }
-  )
+  );
 };
 
 exports.create_chatroom = (req, res) => {
@@ -75,6 +75,9 @@ exports.get_specific_chatroom = (req, res) => {
   con.query(`SELECT * FROM Chatrooms WHERE Id="${req.params.chatroomId}" `, (err, result) => {
     if (err) {
       console.log(err);
+    }
+    if(result.length === 0) {
+      res.status(400).json("Error finding chatroom")
     }
     res.status(200).json(result);
   });
