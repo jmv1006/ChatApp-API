@@ -4,6 +4,8 @@ const chatroomController = require('../controllers/chatroom_controller');
 
 router.get('/all', chatroomController.get_all_chatrooms)
 
+router.get('/users/:userId', chatroomController.get_user_chatrooms)
+
 router.get('/:chatroomId', chatroomController.get_specific_chatroom)
 
 router.post('/create', chatroomController.create_chatroom)
