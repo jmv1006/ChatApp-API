@@ -1,5 +1,6 @@
 const con = require("../db");
 const { v4: uuidv4 } = require("uuid");
+const Joi = require('joi');
 
 exports.get_messages = (req, res) => {
   con.query(
@@ -28,6 +29,21 @@ exports.get_messages = (req, res) => {
 };
 
 exports.create_message = (req, res) => {
+  const schema = joi.object({
+    text: joi.string()
+        .min(1)
+        .required(),
+    userId: joi.string()
+      .required()
+  });
+
+  const { error } = schema.validate(req.body, {abortEarly: false})
+
+  if(error) {
+      res.status(400).json("Error Sending Message")
+      return
+  };
+
   const formattedTime = new Date().toISOString().slice(0, 19).replace("T", " ");
   con.query(
     `SELECT * FROM Chatrooms WHERE Id="${req.params.chatroomId}"`,
@@ -39,11 +55,11 @@ exports.create_message = (req, res) => {
 
       if (result.length === 0) {
         //Chatroom does not exist
-        return res.status(400).json("Error finding chatroom");
+        return res.status(400).json("Chatroom does not exist");
       }
 
       con.query(
-        `INSERT INTO messages (Id, Text, Time, UserId, Chatroom) VALUES ("${uuidv4()}", "${
+        `INSERT INTO Messages (Id, Text, Time, UserId, Chatroom) VALUES ("${uuidv4()}", "${
           req.body.text
         }", "${formattedTime}", "${req.body.userid}", "${
           req.params.chatroomId
@@ -61,8 +77,12 @@ exports.create_message = (req, res) => {
 };
 
 exports.create_chatroom = (req, res) => {
+  if(req.body.member1 === req.body.member2) {
+    return res.status(400).json("Cannot create a chat between the same user!")
+  };
+  
   con.query(
-    `SELECT * FROM Chatrooms WHERE Member1="${req.body.member1}" AND Member2="${req.body.member2}"`,
+    `SELECT * FROM Chatrooms WHERE Member1="${req.body.member1}" AND Member2="${req.body.member2}" OR Member1="${req.body.member2}" AND Member2="${req.body.member1}"`,
     (err, result) => {
       if (err) {
         console.log(err);

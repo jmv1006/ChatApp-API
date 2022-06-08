@@ -20,22 +20,31 @@ const io = require("socket.io")(server, {
 });
 
 io.on("connection", (socket) => {
-  console.log("A user connected");
+  console.log(`A user connected`);
 
   let room = "";
-
   socket.on("room identifier", (roomId) => {
     room = roomId;
     socket.join(room);
   });
 
-  socket.on("message", (message) => {
-    io.to(room).emit("message", `Server recieved message ${message}`);
+  socket.on("roommessage", (message, user, chatInfo) => {
+    io.to(room).emit("roommessage", `${message}`);
+    const notificationObject = {
+      message: message,
+      user: user,
+      chatInfo: chatInfo,
+    };
+    io.emit("notification", notificationObject);
+  });
+
+  socket.on("notificationlink", (message) => {
+    console.log("Notifications Link Established");
   });
 
   socket.on("typing", (displayname, id) => {
-      io.to(room).emit("typing", `${id}`)
-  })
+    io.to(room).emit("typing", `${id}`);
+  });
 
   socket.on("disconnect", () => {
     console.log("a user disconnected");
@@ -45,10 +54,6 @@ io.on("connection", (socket) => {
 passport.use(LocalStrategy);
 passport.use(JWTStrategy);
 app.use(passport.initialize());
-
-app.get("/", (req, res) => {
-  res.send("API working");
-});
 
 const chatroomRoute = require("./routes/chatroom_route");
 app.use(

@@ -15,10 +15,15 @@ exports.get_users = (req, res) => {
 };
 
 exports.get_specific_user = (req, res) => {
-    con.query(`SELECT * FROM Users WHERE Id="${req.params.userId}"`, (err, result) => {
+    con.query(`SELECT * FROM Users WHERE Id="${req.params.userId}" OR Username="${req.params.userId}" `, (err, result) => {
         if (err) {
           console.log(err);
         }
+
+        if(result.length === 0) {
+            return res.status(400).json("User does not exist")
+        }
+        
         res.status(200).json(result);
     });
 };
