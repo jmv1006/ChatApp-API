@@ -1,6 +1,6 @@
 const con = require("../db");
 const { v4: uuidv4 } = require("uuid");
-const Joi = require('joi');
+const joi = require('joi');
 
 exports.get_messages = (req, res) => {
   con.query(
@@ -33,7 +33,7 @@ exports.create_message = (req, res) => {
     text: joi.string()
         .min(1)
         .required(),
-    userId: joi.string()
+    userid: joi.string()
       .required()
   });
 

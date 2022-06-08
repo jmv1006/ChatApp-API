@@ -63,7 +63,7 @@ exports.create_user = (req, res) => {
         
         if(result.length > 0) {
             //user exists
-            return res.status(400).send("User already exists")
+            return res.status(400).send("User Already Exists")
         }
 
         bcrypt.hash(req.body.password, 10, (err, hashedPassword) => {
