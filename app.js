@@ -65,7 +65,7 @@ app.use(
 const authRoute = require("./routes/auth_route");
 app.use("/auth", authRoute);
 
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
   res.send(200).json({message: "API Working"})
 })
 
