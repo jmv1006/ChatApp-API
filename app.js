@@ -65,6 +65,10 @@ app.use(
 const authRoute = require("./routes/auth_route");
 app.use("/auth", authRoute);
 
+app.get('/', (req, res) => {
+  res.send(200).json({message: "API Working"})
+})
+
 const PORT = process.env.PORT || "4000";
 
 server.listen(PORT, () => {
