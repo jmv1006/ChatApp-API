@@ -147,7 +147,6 @@ exports.get_user_chatrooms = (req, res) => {
         return res.status(400).json("User does not have any active chats");
       }
 
-      //chat id and other member
       return res.status(200).json(result);
     }
   );
