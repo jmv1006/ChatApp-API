@@ -2,6 +2,8 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const http = require("http");
+const cookieparser = require('cookie-parser');
+const expressSanitizer = require('express-sanitizer');
 const server = http.createServer(app);
 
 require("dotenv").config();
@@ -14,6 +16,8 @@ const JWTStrategy = require("./config/passport/jwt");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+app.use(cookieparser());
+app.use(expressSanitizer());
 
 const io = require("socket.io")(server, {
   cors: { origin: "*" },
@@ -52,7 +56,7 @@ io.on("connection", (socket) => {
 });
 
 passport.use(LocalStrategy);
-passport.use(JWTStrategy);
+passport.use("jwt", JWTStrategy);
 app.use(passport.initialize());
 
 const chatroomRoute = require("./routes/chatroom_route");
@@ -64,10 +68,6 @@ app.use(
 
 const authRoute = require("./routes/auth_route");
 app.use("/auth", authRoute);
-
-app.get('/api', (req, res) => {
-  res.send(200).json({message: "API Working"})
-})
 
 const PORT = process.env.PORT || "4000";
 

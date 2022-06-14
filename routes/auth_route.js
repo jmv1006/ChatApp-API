@@ -11,4 +11,12 @@ router.post('/sign-up', auth_controller.create_user)
 
 router.post('/sign-in', auth_controller.sign_in)
 
+router.get('/log-out', auth_controller.log_out)
+
+router.get('/session', auth_controller.check_if_session_valid)
+
+router.get('/', (req, res) => {
+    res.status(200)
+})
+
 module.exports = router;

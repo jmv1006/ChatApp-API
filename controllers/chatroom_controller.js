@@ -125,12 +125,12 @@ exports.get_specific_chatroom = (req, res) => {
     `SELECT * FROM Chatrooms WHERE Id="${req.params.chatroomId}" `,
     (err, result) => {
       if (err) {
-        console.log(err);
+        return res.status(500).json("Server error")
       }
       if (result.length === 0) {
-        res.status(400).json("Error finding chatroom");
+        return res.status(400).json("Error finding chatroom");
       }
-      res.status(200).json(result);
+      return res.status(200).json(result);
     }
   );
 };
@@ -141,11 +141,12 @@ exports.get_user_chatrooms = (req, res) => {
     (err, result) => {
       if (err) {
         console.log(err);
+        return res.status(500).json("Error connecting to db")
       }
       if (result.length === 0) {
-        res.status(400).json("User does not have any active chats");
+        return res.status(400).json("User does not have any active chats");
       }
-      res.status(200).json(result);
+      return res.status(200).json(result);
     }
   );
 };

@@ -99,12 +99,40 @@ exports.sign_in = (req, res) => {
         }
         
         const secret = process.env.TOKEN_SECRET
-        const token = jwt.sign({user: tokenUser}, secret, {expiresIn:'30m'});
+        const token = jwt.sign({user: tokenUser}, secret, {expiresIn: '15m'})
     
-        return res.status(200).json({
+        return res.status(200).cookie('token', token, {httpOnly: true, sameSite: 'strict', secure: true}).json({
             message: 'Auth Passed',
             user: tokenUser,
-            token: token
         })
     })(req, res)
+}
+
+exports.check_if_session_valid = (req, res) => {
+    passport.authenticate('jwt', {session: false}, (err, user, info) => {
+        if(err) {
+            return res.status(400).json('Error Authenticating Token')
+        }
+
+        if(!user) {
+            return res.status(401).json("Token Expired")
+        }
+
+        const userObj = {
+            id: user.Id,
+            username: user.Username,
+            displayname: user.DisplayName
+        }
+
+        res.status(200).json({
+            message: "Session Valid",
+            user: userObj
+        })
+    })(req, res)
+}
+
+exports.log_out = (req, res) => {
+    req.logout((err) => {
+        res.clearCookie("token").json("Successfully Logged Out")
+    })
 }
