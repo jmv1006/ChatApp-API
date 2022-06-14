@@ -15,4 +15,8 @@ router.get('/log-out', auth_controller.log_out)
 
 router.get('/session', auth_controller.check_if_session_valid)
 
+router.get('/', (req, res) => {
+    res.status(200)
+})
+
 module.exports = router;
