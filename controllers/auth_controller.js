@@ -5,16 +5,18 @@ const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const joi = require("joi");
 
-exports.get_users = (req, res) => {
+exports.get_users = async (req, res) => {
+
     con.query(`SELECT * FROM Users`, (err, result) => {
         if (err) {
-          console.log(err);
+         return console.log(err);
         }
-        res.status(200).json(result);
+        return res.status(200).json(result);
     });
 };
 
-exports.get_specific_user = (req, res) => {
+exports.get_specific_user = async (req, res) => {
+
     con.query(`SELECT * FROM Users WHERE Id="${req.params.userId}" OR Username="${req.params.userId}" `, (err, result) => {
         if (err) {
           console.log(err);
@@ -23,8 +25,13 @@ exports.get_specific_user = (req, res) => {
         if(result.length === 0) {
             return res.status(400).json("User does not exist")
         }
-        
-        res.status(200).json(result);
+
+        const user = {
+            Id: result[0].Id,
+            Username: result[0].Username,
+            DisplayName: result[0].DisplayName
+        }
+        res.status(200).json(user);
     });
 };
 

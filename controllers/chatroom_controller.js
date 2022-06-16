@@ -2,7 +2,8 @@ const con = require("../db");
 const { v4: uuidv4 } = require("uuid");
 const joi = require('joi');
 
-exports.get_messages = (req, res) => {
+exports.get_messages = async (req, res) => {
+
   con.query(
     `SELECT * FROM Chatrooms WHERE Id="${req.params.chatroomId}"`,
     (err, result) => {
@@ -49,7 +50,6 @@ exports.create_message = (req, res) => {
     `SELECT * FROM Chatrooms WHERE Id="${req.params.chatroomId}"`,
     (err, result) => {
       if (err) {
-        console.log(err);
         return res.status(400).json("Error finding chatroom");
       }
 
@@ -135,12 +135,11 @@ exports.get_specific_chatroom = (req, res) => {
   );
 };
 
-exports.get_user_chatrooms = (req, res) => {
+exports.get_user_chatrooms = async (req, res) => {
   con.query(
     `SELECT * FROM Chatrooms WHERE Member1="${req.params.userId}" OR Member2="${req.params.userId}"`,
     (err, result) => {
       if (err) {
-        console.log(err);
         return res.status(500).json("Error connecting to db")
       }
       if (result.length === 0) {
@@ -150,3 +149,14 @@ exports.get_user_chatrooms = (req, res) => {
     }
   );
 };
+
+exports.get_paginated_messages = (req, res) => {
+  con.query(`(
+    SELECT * FROM Messages
+    WHERE Chatroom="${req.params.chatroomId}"
+    ORDER BY Time
+    DESC LIMIT 0, ${req.params.pageNumber}
+  ) ORDER BY Time`, (err, result) => {
+    res.status(200).json(result)
+  })
+}
