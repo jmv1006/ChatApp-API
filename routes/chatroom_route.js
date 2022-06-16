@@ -8,9 +8,9 @@ router.get('/users/:userId', chatroomController.get_user_chatrooms)
 
 router.get('/:chatroomId', chatroomController.get_specific_chatroom)
 
-router.post('/create', chatroomController.create_chatroom)
+router.post('/:chatroomId', chatroomController.create_message)
 
-router.post('/:chatroomId/create-message', chatroomController.create_message)
+router.post('/create', chatroomController.create_chatroom)
 
 router.get('/:chatroomId/messages', chatroomController.get_messages)
 

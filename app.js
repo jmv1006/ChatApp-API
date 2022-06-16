@@ -69,7 +69,7 @@ app.use(
 const authRoute = require("./routes/auth_route");
 app.use("/auth", authRoute);
 
-const PORT = process.env.PORT || "4000";
+const PORT = process.env.PORT || "5500";
 
 server.listen(PORT, () => {
   console.log(`listening on port ${PORT}`);
