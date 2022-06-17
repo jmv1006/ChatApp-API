@@ -16,7 +16,6 @@ exports.get_users = async (req, res) => {
 };
 
 exports.get_specific_user = async (req, res) => {
-
     con.query(`SELECT * FROM Users WHERE Id="${req.params.userId}" OR Username="${req.params.userId}" `, (err, result) => {
         if (err) {
           console.log(err);

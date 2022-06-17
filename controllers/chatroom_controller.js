@@ -3,7 +3,6 @@ const { v4: uuidv4 } = require("uuid");
 const joi = require('joi');
 
 exports.get_messages = async (req, res) => {
-
   con.query(
     `SELECT * FROM Chatrooms WHERE Id="${req.params.chatroomId}"`,
     (err, result) => {
@@ -80,7 +79,6 @@ exports.create_chatroom = (req, res) => {
   if(req.body.member1 === req.body.member2) {
     return res.status(400).json("Cannot create a chat between the same user!")
   };
-  
   con.query(
     `SELECT * FROM Chatrooms WHERE Member1="${req.body.member1}" AND Member2="${req.body.member2}" OR Member1="${req.body.member2}" AND Member2="${req.body.member1}"`,
     (err, result) => {
@@ -94,11 +92,7 @@ exports.create_chatroom = (req, res) => {
       }
 
       con.query(
-        `INSERT INTO Chatrooms (Id, Member1, Member2, Member1Name, Member2Name) VALUES ("${uuidv4()}", "${
-          req.body.member1
-        }", "${req.body.member2}", "${req.body.member1name}", "${
-          req.body.member2name
-        }") `,
+        `INSERT INTO Chatrooms (Id, Member1, Member2, Member1Name, Member2Name) VALUES ("${uuidv4()}", "${req.body.member1}", "${req.body.member2}", "${req.body.member1name}", "${req.body.member2name}") `,
         (err, result) => {
           if (err) {
             console.log(err);
@@ -130,7 +124,30 @@ exports.get_specific_chatroom = (req, res) => {
       if (result.length === 0) {
         return res.status(400).json("Error finding chatroom");
       }
-      return res.status(200).json(result);
+
+      con.query(`SELECT * FROM Users WHERE Id ="${result[0].Member1}" OR Id="${result[0].Member2}"`, (err, userResult) => {
+        let Member1Name;
+        let Member2Name;
+
+        if(result[0].Member1 === userResult[0].Id) {
+          Member1Name = userResult[0].DisplayName
+          Member2Name = userResult[1].DisplayName
+          return
+        } else {
+          Member1Name = userResult[1].DisplayName
+          Member2Name = userResult[0].DisplayName
+        }
+
+        const data = [{
+          Id: result[0].Id,
+          Member1: result[0].Member1,
+          Member2: result[0].Member2,
+          Member1Name: Member1Name,
+          Member2Name: Member2Name
+        }];
+
+        return res.status(200).json(data)
+      })  
     }
   );
 };
@@ -142,6 +159,7 @@ exports.get_user_chatrooms = async (req, res) => {
       if (err) {
         return res.status(500).json("Error connecting to db")
       }
+
       if (result.length === 0) {
         return res.status(400).json("User does not have any active chats");
       }
