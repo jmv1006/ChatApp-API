@@ -135,10 +135,8 @@ exports.check_if_session_valid = (req, res) => {
             user: userObj
         })
     })(req, res)
-}
+};
 
 exports.log_out = (req, res) => {
-    req.logout((err) => {
-        res.clearCookie("token").json("Successfully Logged Out")
-    })
-}
+    res.clearCookie("token").status(200).json("Successfully Logged Out");
+};

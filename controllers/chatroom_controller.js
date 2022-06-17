@@ -58,11 +58,7 @@ exports.create_message = (req, res) => {
       }
 
       con.query(
-        `INSERT INTO Messages (Id, Text, Time, UserId, Chatroom) VALUES ("${uuidv4()}", "${
-          req.body.text
-        }", "${formattedTime}", "${req.body.userid}", "${
-          req.params.chatroomId
-        }")`,
+        `INSERT INTO Messages (Id, Text, Time, UserId, Chatroom) VALUES ("${uuidv4()}", "${req.body.text}", "${formattedTime}", "${req.body.userid}", "${req.params.chatroomId}")`,
         (err, result) => {
           if (err) {
             console.log(err);
@@ -79,6 +75,7 @@ exports.create_chatroom = (req, res) => {
   if(req.body.member1 === req.body.member2) {
     return res.status(400).json("Cannot create a chat between the same user!")
   };
+
   con.query(
     `SELECT * FROM Chatrooms WHERE Member1="${req.body.member1}" AND Member2="${req.body.member2}" OR Member1="${req.body.member2}" AND Member2="${req.body.member1}"`,
     (err, result) => {
@@ -92,7 +89,7 @@ exports.create_chatroom = (req, res) => {
       }
 
       con.query(
-        `INSERT INTO Chatrooms (Id, Member1, Member2, Member1Name, Member2Name) VALUES ("${uuidv4()}", "${req.body.member1}", "${req.body.member2}", "${req.body.member1name}", "${req.body.member2name}") `,
+        `INSERT INTO Chatrooms (Id, Member1, Member2) VALUES ("${uuidv4()}", "${req.body.member1}", "${req.body.member2}") `,
         (err, result) => {
           if (err) {
             console.log(err);
@@ -109,6 +106,7 @@ exports.get_all_chatrooms = (req, res) => {
   con.query("SELECT * FROM Chatrooms", (err, result) => {
     if (err) {
       console.log(err);
+      return
     }
     res.status(200).json(result);
   });
