@@ -88,6 +88,35 @@ exports.create_user = (req, res) => {
     });
 };
 
+exports.update_user = (req, res) => {
+    const schema = joi.object({
+        username: joi.string()
+            .email()
+            .min(3)
+            .max(30)
+            .required(),
+        displayname: joi.string()
+            .min(3)
+            .max(30)
+            .required(),
+    });
+
+    const { error } = schema.validate(req.body, {abortEarly: false})
+
+    if(error) {
+        res.status(400).json("Error Updating User")
+        return
+    };
+
+    con.query(`UPDATE Users SET DisplayName = "${req.body.displayname}", Username = "${req.body.username}" WHERE Id = "${req.params.userId}"`, (err, result) => {
+        if(err) {
+            return res.status(500).json("Server Error")
+        }
+
+        res.status(200).json("Successfully Updated User")
+    })
+};
+
 exports.sign_in = (req, res) => {
     passport.authenticate('local', {session: false}, (err, user, info) => {
         if(err) {

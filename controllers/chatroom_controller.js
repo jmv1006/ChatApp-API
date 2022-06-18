@@ -82,7 +82,7 @@ exports.create_chatroom = (req, res) => {
       if (err) {
         console.log(err);
         return res.status(400).json("Error creating chatroom");
-      }
+      } 
 
       if (result.length > 0) {
         return res.status(400).json("Chat between users already exists");
@@ -130,7 +130,6 @@ exports.get_specific_chatroom = (req, res) => {
         if(result[0].Member1 === userResult[0].Id) {
           Member1Name = userResult[0].DisplayName
           Member2Name = userResult[1].DisplayName
-          return
         } else {
           Member1Name = userResult[1].DisplayName
           Member2Name = userResult[0].DisplayName
@@ -157,11 +156,6 @@ exports.get_user_chatrooms = async (req, res) => {
       if (err) {
         return res.status(500).json("Error connecting to db")
       }
-
-      if (result.length === 0) {
-        return res.status(400).json("User does not have any active chats");
-      }
-
       return res.status(200).json(result);
     }
   );

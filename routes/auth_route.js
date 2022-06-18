@@ -7,6 +7,8 @@ router.get('/users', passport.authenticate("jwt", { session: false }), auth_cont
 
 router.get('/users/:userId',  passport.authenticate("jwt", { session: false }), auth_controller.get_specific_user)
 
+router.put('/users/:userId',  passport.authenticate("jwt", { session: false }), auth_controller.update_user)
+
 router.post('/sign-up', auth_controller.create_user)
 
 router.post('/sign-in', auth_controller.sign_in)

@@ -3,6 +3,7 @@ const dbConfig = require('./config/db.config');
 
 const con = mysql.createConnection({
     host: dbConfig.host,
+    port: dbConfig.port,
     user: dbConfig.user,
     password: dbConfig.password,
     database: dbConfig.database
@@ -11,6 +12,7 @@ const con = mysql.createConnection({
 con.connect((err) => {
     if(err) {
         console.log(err)
+        return
     }
     
     console.log('Successfully Connected to DB')
