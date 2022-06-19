@@ -4,16 +4,8 @@ const bcrypt = require("bcryptjs");
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const joi = require("joi");
+const sanitize = require('express-sanitizer');
 
-exports.get_users = async (req, res) => {
-
-    con.query(`SELECT * FROM Users`, (err, result) => {
-        if (err) {
-         return console.log(err);
-        }
-        return res.status(200).json(result);
-    });
-};
 
 exports.get_specific_user = async (req, res) => {
     con.query(`SELECT * FROM Users WHERE Id="${req.params.userId}" OR Username="${req.params.userId}" `, (err, result) => {
@@ -169,3 +161,8 @@ exports.check_if_session_valid = (req, res) => {
 exports.log_out = (req, res) => {
     res.clearCookie("token").status(200).json("Successfully Logged Out");
 };
+
+exports.test_sanitizer = (req, res) => {
+    const sanitized = req.sanitize(req.body.min)
+    res.send(sanitized)
+}

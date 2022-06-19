@@ -4,6 +4,8 @@ const cors = require("cors");
 const http = require("http");
 const cookieparser = require('cookie-parser');
 const expressSanitizer = require('express-sanitizer');
+const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
 const server = http.createServer(app);
 
 require("dotenv").config();
@@ -18,6 +20,17 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(cookieparser());
 app.use(expressSanitizer());
+app.use(helmet());
+
+
+const limiter = rateLimit({
+	windowMs: 15 * 60 * 1000, // 15 minutes
+	max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+})
+
+app.use(limiter)
 
 const io = require("socket.io")(server, {
   cors: { origin: "*" },
@@ -68,6 +81,10 @@ app.use(
 
 const authRoute = require("./routes/auth_route");
 app.use("/auth", authRoute);
+
+app.get('*', (req, res) => {
+  res.status(404).json("Not Found");
+});
 
 const PORT = process.env.PORT || "5500";
 
