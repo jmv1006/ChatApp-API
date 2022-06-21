@@ -1,14 +1,13 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const http = require("http");
 const cookieparser = require('cookie-parser');
 const expressSanitizer = require('express-sanitizer');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
-const server = http.createServer(app);
 
 require("dotenv").config();
+
 const db = require("./db");
 
 const passport = require("passport");
@@ -30,43 +29,7 @@ const limiter = rateLimit({
 	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 })
 
-app.use(limiter)
-
-const io = require("socket.io")(server, {
-  cors: { origin: "*" },
-});
-
-io.on("connection", (socket) => {
-  console.log(`A user connected`);
-
-  let room = "";
-  socket.on("room identifier", (roomId) => {
-    room = roomId;
-    socket.join(room);
-  });
-
-  socket.on("roommessage", (message, user, chatInfo) => {
-    io.to(room).emit("roommessage", `${message}`);
-    const notificationObject = {
-      message: message,
-      user: user,
-      chatInfo: chatInfo,
-    };
-    io.emit("notification", notificationObject);
-  });
-
-  socket.on("notificationlink", (message) => {
-    console.log("Notifications Link Established");
-  });
-
-  socket.on("typing", (displayname, id) => {
-    io.to(room).emit("typing", `${id}`);
-  });
-
-  socket.on("disconnect", () => {
-    console.log("a user disconnected");
-  });
-});
+app.use(limiter);
 
 passport.use(LocalStrategy);
 passport.use("jwt", JWTStrategy);
@@ -86,8 +49,4 @@ app.get('*', (req, res) => {
   res.status(404).json("Not Found");
 });
 
-const PORT = process.env.PORT || "5000";
-
-server.listen(PORT, () => {
-  console.log(`listening on port ${PORT}`);
-});
+module.exports = app;

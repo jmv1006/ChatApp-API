@@ -120,6 +120,7 @@ exports.get_specific_chatroom = (req, res) => {
       if (err) {
         return res.status(500).json("Server error")
       }
+      
       if (result.length === 0) {
         return res.status(400).json("Error finding chatroom");
       }
@@ -182,4 +183,4 @@ exports.get_paginated_messages = (req, res) => {
       res.status(200).json(infoObject)
     })
   })
-}
+};
