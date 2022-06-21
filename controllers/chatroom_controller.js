@@ -20,7 +20,8 @@ exports.get_messages = async (req, res) => {
         (err, result) => {
           if (err) {
             console.log(err);
-          }
+          };
+
           return res.status(200).json(result);
         }
       );
@@ -162,12 +163,23 @@ exports.get_user_chatrooms = async (req, res) => {
 };
 
 exports.get_paginated_messages = (req, res) => {
-  con.query(`(
-    SELECT * FROM Messages
-    WHERE Chatroom="${req.params.chatroomId}"
-    ORDER BY Time
-    DESC LIMIT 0, ${req.params.pageNumber}
-  ) ORDER BY Time`, (err, result) => {
-    res.status(200).json(result)
+  con.query(`SELECT * FROM Messages WHERE Chatroom="${req.params.chatroomId}"`, (err, messages) => {
+
+    const messagesAmount = messages.length;
+    
+    con.query(`(
+      SELECT * FROM Messages
+      WHERE Chatroom="${req.params.chatroomId}"
+      ORDER BY Time
+      DESC LIMIT 0, ${req.params.pageNumber}
+    ) ORDER BY Time`, (err, result) => {
+
+      const infoObject = {
+        messages: result,
+        messagesAmount: messagesAmount
+      };
+
+      res.status(200).json(infoObject)
+    })
   })
 }

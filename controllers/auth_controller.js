@@ -162,7 +162,8 @@ exports.log_out = (req, res) => {
     res.clearCookie("token").status(200).json("Successfully Logged Out");
 };
 
+
 exports.test_sanitizer = (req, res) => {
     const sanitized = req.sanitize(req.body.min)
     res.send(sanitized)
-}
+};

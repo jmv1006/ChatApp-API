@@ -14,4 +14,6 @@ router.post('/:chatroomId', chatroomController.create_message)
 
 router.get('/:chatroomId/messages', chatroomController.get_messages)
 
+router.get('/:chatroomId/messages/paginated/:pageNumber', chatroomController.get_paginated_messages)
+
 module.exports = router;
