@@ -18,9 +18,9 @@ exports.get_specific_user = async (req, res) => {
         }
 
         const user = {
-            Id: result[0].Id,
-            Username: result[0].Username,
-            DisplayName: result[0].DisplayName
+            id: result[0].Id,
+            username: result[0].Username,
+            displayname: result[0].DisplayName
         }
         res.status(200).json(user);
     });
