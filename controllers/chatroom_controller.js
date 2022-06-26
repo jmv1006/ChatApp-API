@@ -152,6 +152,7 @@ exports.get_specific_chatroom = (req, res) => {
 };
 
 exports.get_user_chatrooms = async (req, res) => {
+  
   con.query(
     `SELECT * FROM Chatrooms WHERE Member1="${req.params.userId}" OR Member2="${req.params.userId}"`,
     (err, result) => {
